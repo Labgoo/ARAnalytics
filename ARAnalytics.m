@@ -14,6 +14,7 @@ static ARAnalytics *_sharedAnalytics;
 
 @interface ARAnalytics ()
 @property (strong) NSMutableDictionary *eventsDictionary;
+@property (strong) NSMutableDictionary *eventsPropertiesDictionary;
 @property (strong) NSSet *providers;
 @end
 
@@ -390,11 +391,23 @@ static ARAnalytics *_sharedAnalytics;
 #pragma mark -
 #pragma mark Timing Events
 
-+ (void)startTimingEvent:(NSString *)event {
++ (void)startTimingEvent:(NSString *)event withProperties:(NSDictionary *)properties {
     if (!_sharedAnalytics.eventsDictionary) {
         _sharedAnalytics.eventsDictionary = [NSMutableDictionary dictionary];
     }
+    
+    if (!_sharedAnalytics.eventsPropertiesDictionary) {
+        _sharedAnalytics.eventsPropertiesDictionary = [NSMutableDictionary dictionary];
+    }
     _sharedAnalytics.eventsDictionary[event] = [NSDate date];
+    
+    if (properties) {
+        _sharedAnalytics.eventsPropertiesDictionary[event] = properties;
+    }
+}
+
++ (void)startTimingEvent:(NSString *)event {
+    [ARAnalytics startTimingEvent:event withProperties:nil];
 }
 
 + (void)finishTimingEvent:(NSString *)event {
@@ -402,7 +415,6 @@ static ARAnalytics *_sharedAnalytics;
 }
 
 +(void)finishTimingEvent:(NSString *)event withProperties:(NSDictionary *)properties {
-
     NSDate *startDate = _sharedAnalytics.eventsDictionary[event];
     if (!startDate) {
         NSLog(@"ARAnalytics: finish timing event called without a corrosponding start timing event");
@@ -411,9 +423,20 @@ static ARAnalytics *_sharedAnalytics;
 
     NSTimeInterval eventInterval = [[NSDate date] timeIntervalSinceDate:startDate];
     [_sharedAnalytics.eventsDictionary removeObjectForKey:event];
-
+    
+    NSDictionary *savedProperties = _sharedAnalytics.eventsPropertiesDictionary[event];
+    NSMutableDictionary *combinedProperties;
+    
+    if (savedProperties) {
+        combinedProperties = [NSMutableDictionary dictionary];
+        [combinedProperties addEntriesFromDictionary:properties];
+        [combinedProperties addEntriesFromDictionary:savedProperties];
+    } else {
+        combinedProperties = properties;
+    }
+    
     [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
-        [provider logTimingEvent:event withInterval:@(eventInterval) properties:properties];
+        [provider logTimingEvent:event withInterval:@(eventInterval) properties:combinedProperties];
     }];
 }
 

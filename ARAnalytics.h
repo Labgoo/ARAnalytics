@@ -140,6 +140,9 @@
 /// Let ARAnalytics deal with the timing of an event
 + (void)startTimingEvent:(NSString *)event;
 
+/// @warning the properites must not contain the key string `length` .
++ (void)startTimingEvent:(NSString *)event withProperties:(NSDictionary *)properties;
+
 /// Trigger a finishing event for the timing
 + (void)finishTimingEvent:(NSString *)event;
 
