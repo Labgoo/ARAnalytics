@@ -43,6 +43,20 @@ static ARAnalytics *_sharedAnalytics;
     });
 }
 
+- (NSMutableDictionary *)eventsDictionary {
+    if (!_eventsDictionary) {
+        _eventsDictionary = [NSMutableDictionary dictionary];
+    }
+    return _eventsDictionary;
+}
+
+- (NSMutableDictionary *)eventsPropertiesDictionary {
+    if (!_eventsPropertiesDictionary) {
+        _eventsPropertiesDictionary = [NSMutableDictionary dictionary];
+    }
+    return _eventsPropertiesDictionary;
+}
+
 #pragma mark -
 #pragma mark Analytics Setup
 
@@ -329,6 +343,7 @@ static ARAnalytics *_sharedAnalytics;
 
 + (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
     NSDictionary *combinedProperties = [_sharedAnalytics mergeProperties:properties forEvent:event];
+    [_sharedAnalytics.eventsPropertiesDictionary removeObjectForKey:event];
     
     [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
         [provider event:event withProperties:combinedProperties];
@@ -394,13 +409,6 @@ static ARAnalytics *_sharedAnalytics;
 #pragma mark Timing Events
 
 + (void)startTimingEvent:(NSString *)event withProperties:(NSDictionary *)properties {
-    if (!_sharedAnalytics.eventsDictionary) {
-        _sharedAnalytics.eventsDictionary = [NSMutableDictionary dictionary];
-    }
-    
-    if (!_sharedAnalytics.eventsPropertiesDictionary) {
-        _sharedAnalytics.eventsPropertiesDictionary = [NSMutableDictionary dictionary];
-    }
     _sharedAnalytics.eventsDictionary[event] = [NSDate date];
     
     if (properties) {
@@ -427,18 +435,16 @@ static ARAnalytics *_sharedAnalytics;
     [_sharedAnalytics.eventsDictionary removeObjectForKey:event];
     
     NSDictionary *combinedProperties = [_sharedAnalytics mergeProperties:properties forEvent:event];
+    [_sharedAnalytics.eventsPropertiesDictionary removeObjectForKey:event];
     
     [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
         [provider logTimingEvent:event withInterval:@(eventInterval) properties:combinedProperties];
     }];
 }
 
-+ (void)setProperties:(NSDictionary *)properties forEvent:(NSString *)event {
-    if (!_sharedAnalytics.eventsPropertiesDictionary) {
-        _sharedAnalytics.eventsPropertiesDictionary = [NSMutableDictionary dictionary];
-    }
-    
-    _sharedAnalytics.eventsPropertiesDictionary[event] = properties;
++ (void)addProperties:(NSDictionary *)properties forEvent:(NSString *)event {
+    _sharedAnalytics.eventsPropertiesDictionary[event] = [_sharedAnalytics mergeProperties:properties
+                                                                                  forEvent:event];
 }
 
 
@@ -453,17 +459,14 @@ static ARAnalytics *_sharedAnalytics;
 
 - (NSDictionary *)mergeProperties:(NSDictionary *)properties forEvent:(NSString *)event {
     NSDictionary *savedProperties = _sharedAnalytics.eventsPropertiesDictionary[event];
-    NSMutableDictionary *combinedProperties;
-    
-    if (savedProperties) {
-        combinedProperties = [NSMutableDictionary dictionary];
-        [combinedProperties addEntriesFromDictionary:savedProperties];
-        [combinedProperties addEntriesFromDictionary:properties];
-    } else {
-        combinedProperties = properties;
+    if (!savedProperties) {
+        return properties;
     }
+
+    NSMutableDictionary *combinedProperties = [NSMutableDictionary dictionaryWithDictionary:savedProperties];
+    [combinedProperties addEntriesFromDictionary:properties];
     
-    return combinedProperties;
+    return [combinedProperties copy];
 }
 
 @end
