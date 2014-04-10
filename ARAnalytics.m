@@ -129,6 +129,10 @@ static ARAnalytics *_sharedAnalytics;
         [self setupChartbeatWithApplicationID:analyticsDictionary[ARChartbeatID]];
     }
 
+    if (analyticsDictionary[ARAppseeAPIKey]) {
+        [self setupAppseeWithAPIKey:analyticsDictionary[ARAppseeAPIKey]];
+    }
+
     // Crashlytics / Crittercism should stay at the bottom of this,
     // as they both need to register exceptions, and you'd only use one.
 
@@ -295,6 +299,13 @@ static ARAnalytics *_sharedAnalytics;
 + (void)setupChartbeatWithApplicationID:(NSString *)appID {
 #ifdef AR_CHARTBEAT_EXISTS
     ChartbeatProvider *provider = [[ChartbeatProvider alloc] initWithIdentifier:appID];
+    [self setupProvider:provider];
+#endif
+}
+
++ (void)setupAppseeWithAPIKey:(NSString *)key {
+#ifdef AR_APPSEE_EXISTS
+    AppseeProvider *provider = [[AppseeProvider alloc] initWithIdentifier:key];
     [self setupProvider:provider];
 #endif
 }
@@ -534,3 +545,4 @@ const NSString *ARParseApplicationID = @"ARParseApplicationID";
 const NSString *ARParseClientKey = @"ARParseClientKey";
 const NSString *ARHeapAppID = @"ARHeapAppID";
 const NSString *ARChartbeatID = @"ARChartbeatID";
+const NSString *ARAppseeAPIKey = @"ARAppseeAPIKey";
