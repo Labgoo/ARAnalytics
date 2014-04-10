@@ -442,6 +442,10 @@ static ARAnalytics *_sharedAnalytics;
     }];
 }
 
++ (BOOL)isTrackingEvent:(NSString *)event {
+    return _sharedAnalytics.eventsDictionary[event] != nil;
+}
+
 + (void)addProperties:(NSDictionary *)properties forEvent:(NSString *)event {
     _sharedAnalytics.eventsPropertiesDictionary[event] = [_sharedAnalytics mergeProperties:properties
                                                                                   forEvent:event];

@@ -146,6 +146,8 @@
 /// Trigger a finishing event for the timing
 + (void)finishTimingEvent:(NSString *)event;
 
++ (BOOL)isTrackingEvent:(NSString *)event;
+
 /// @warning the properites must not contain the key string `length` .
 + (void)finishTimingEvent:(NSString *)event withProperties:(NSDictionary *)properties;
 
