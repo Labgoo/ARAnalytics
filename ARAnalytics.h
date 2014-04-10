@@ -149,6 +149,8 @@
 /// @warning the properites must not contain the key string `length` .
 + (void)finishTimingEvent:(NSString *)event withProperties:(NSDictionary *)properties;
 
++ (void)setProperties:(NSDictionary *)properties forEvent:(NSString *)event;
+
 @end
 
 /// an NSLog-like command that send to providers

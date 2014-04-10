@@ -328,8 +328,10 @@ static ARAnalytics *_sharedAnalytics;
 }
 
 + (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
+    NSDictionary *combinedProperties = [_sharedAnalytics mergeProperties:properties forEvent:event];
+    
     [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
-        [provider event:event withProperties:properties];
+        [provider event:event withProperties:combinedProperties];
     }];
 }
 
@@ -337,13 +339,13 @@ static ARAnalytics *_sharedAnalytics;
 #pragma mark Errors
 
 + (void)error:(NSError *)error {
-	[self error:error withMessage:nil];
+    [self error:error withMessage:nil];
 }
 
 + (void)error:(NSError *)error withMessage:(NSString *)message {
-	[_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
-		[provider error:error withMessage:message];
-	}];
+    [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
+        [provider error:error withMessage:message];
+    }];
 }
 
 #pragma mark -
@@ -424,20 +426,19 @@ static ARAnalytics *_sharedAnalytics;
     NSTimeInterval eventInterval = [[NSDate date] timeIntervalSinceDate:startDate];
     [_sharedAnalytics.eventsDictionary removeObjectForKey:event];
     
-    NSDictionary *savedProperties = _sharedAnalytics.eventsPropertiesDictionary[event];
-    NSMutableDictionary *combinedProperties;
-    
-    if (savedProperties) {
-        combinedProperties = [NSMutableDictionary dictionary];
-        [combinedProperties addEntriesFromDictionary:properties];
-        [combinedProperties addEntriesFromDictionary:savedProperties];
-    } else {
-        combinedProperties = properties;
-    }
+    NSDictionary *combinedProperties = [_sharedAnalytics mergeProperties:properties forEvent:event];
     
     [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
         [provider logTimingEvent:event withInterval:@(eventInterval) properties:combinedProperties];
     }];
+}
+
++ (void)setProperties:(NSDictionary *)properties forEvent:(NSString *)event {
+    if (!_sharedAnalytics.eventsPropertiesDictionary) {
+        _sharedAnalytics.eventsPropertiesDictionary = [NSMutableDictionary dictionary];
+    }
+    
+    _sharedAnalytics.eventsPropertiesDictionary[event] = properties;
 }
 
 
@@ -448,6 +449,21 @@ static ARAnalytics *_sharedAnalytics;
     for (ARAnalyticalProvider *provider in _providers) {
         providerBlock(provider);
     }
+}
+
+- (NSDictionary *)mergeProperties:(NSDictionary *)properties forEvent:(NSString *)event {
+    NSDictionary *savedProperties = _sharedAnalytics.eventsPropertiesDictionary[event];
+    NSMutableDictionary *combinedProperties;
+    
+    if (savedProperties) {
+        combinedProperties = [NSMutableDictionary dictionary];
+        [combinedProperties addEntriesFromDictionary:savedProperties];
+        [combinedProperties addEntriesFromDictionary:properties];
+    } else {
+        combinedProperties = properties;
+    }
+    
+    return combinedProperties;
 }
 
 @end
