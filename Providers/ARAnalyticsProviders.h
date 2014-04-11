@@ -78,3 +78,7 @@
 #ifdef AR_CHARTBEAT_EXISTS
 #import "ChartbeatProvider.h"
 #endif
+
+#ifdef AR_APPSEE_EXISTS
+#import "AppseeProvider.h"
+#endif

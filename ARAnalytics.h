@@ -88,6 +88,7 @@
 + (void)setupParseAnalyticsWithApplicationID:(NSString *)appID clientKey:(NSString *)clientKey;
 + (void)setupHeapAnalyticsWithApplicationID:(NSString *)appID;
 + (void)setupChartbeatWithApplicationID:(NSString *)appID;
++ (void)setupAppseeWithAPIKey:(NSString *)key;
 
 
 /// Add a provider manually
@@ -188,3 +189,4 @@ extern const NSString *ARParseApplicationID;
 extern const NSString *ARParseClientKey;
 extern const NSString *ARHeapAppID;
 extern const NSString *ARChartbeatID;
+extern const NSString *ARAppseeAPIKey;
