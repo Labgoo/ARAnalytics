@@ -154,6 +154,8 @@
 
 + (void)addProperties:(NSDictionary *)properties forEvent:(NSString *)event;
 
++ (void)removePropertiesForEvent:(NSString *)event;
+
 @end
 
 /// an NSLog-like command that send to providers

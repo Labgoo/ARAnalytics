@@ -354,8 +354,7 @@ static ARAnalytics *_sharedAnalytics;
 
 + (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
     NSDictionary *combinedProperties = [_sharedAnalytics mergeProperties:properties forEvent:event];
-    [_sharedAnalytics.eventsPropertiesDictionary removeObjectForKey:event];
-    
+
     [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
         [provider event:event withProperties:combinedProperties];
     }];
@@ -460,6 +459,10 @@ static ARAnalytics *_sharedAnalytics;
 + (void)addProperties:(NSDictionary *)properties forEvent:(NSString *)event {
     _sharedAnalytics.eventsPropertiesDictionary[event] = [_sharedAnalytics mergeProperties:properties
                                                                                   forEvent:event];
+}
+
++ (void)removePropertiesForEvent:(NSString *)event {
+    [_sharedAnalytics.eventsPropertiesDictionary removeObjectForKey:event];
 }
 
 
