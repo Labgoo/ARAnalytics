@@ -10,6 +10,8 @@
 #import "ARAnalyticsProviders.h"
 #import "Flurry.h"
 
+static const NSUInteger kFlurryMaximumNumberOfParameters = 10;
+
 @implementation FlurryProvider
 #ifdef AR_FLURRY_EXISTS
 
@@ -31,7 +33,7 @@
 }
 
 - (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
-    [Flurry logEvent:event withParameters:properties];
+    [Flurry logEvent:event withParameters:[self dictionaryWithLimitedNumberOfKeysFromDictionary:properties]];
 }
 
 - (void)error:(NSError *)error withMessage:(NSString *)message {
@@ -46,4 +48,24 @@
 }
 
 #endif
+
+#pragma mark - Private
+
+- (NSDictionary *)dictionaryWithLimitedNumberOfKeysFromDictionary:(NSDictionary *)dictionary {
+    if ([dictionary count] <= kFlurryMaximumNumberOfParameters) {
+        return dictionary;
+    }
+
+    NSMutableDictionary *trimmedDictionary = [NSMutableDictionary dictionary];
+    NSUInteger count = 0;
+    for (id key in dictionary) {
+        trimmedDictionary[key] = dictionary[key];
+        ++count;
+        if (count == kFlurryMaximumNumberOfParameters) {
+            break;
+        }
+    }
+    return trimmedDictionary;
+}
+
 @end
