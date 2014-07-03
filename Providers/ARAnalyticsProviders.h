@@ -82,3 +82,7 @@
 #ifdef AR_APPSEE_EXISTS
 #import "AppseeProvider.h"
 #endif
+
+#ifdef AR_APPSFLYER_EXISTS
+#import "AppsFlyerProvider.h"
+#endif

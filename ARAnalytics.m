@@ -132,6 +132,10 @@ static ARAnalytics *_sharedAnalytics;
     if (analyticsDictionary[ARAppseeAPIKey]) {
         [self setupAppseeWithAPIKey:analyticsDictionary[ARAppseeAPIKey]];
     }
+    
+    if (analyticsDictionary[ARAppsFlyerKey] && analyticsDictionary[ARItuneAppID]) {
+        [self setupAppsFlyerWithITunesAppID:analyticsDictionary[ARItuneAppID] key:analyticsDictionary[ARAppsFlyerKey]];
+    }
 
     // Crashlytics / Crittercism should stay at the bottom of this,
     // as they both need to register exceptions, and you'd only use one.
@@ -306,6 +310,13 @@ static ARAnalytics *_sharedAnalytics;
 + (void)setupAppseeWithAPIKey:(NSString *)key {
 #ifdef AR_APPSEE_EXISTS
     AppseeProvider *provider = [[AppseeProvider alloc] initWithIdentifier:key];
+    [self setupProvider:provider];
+#endif
+}
+
++ (void)setupAppsFlyerWithITunesAppID:(NSString *)iTunesAppID key:(NSString *)key {
+#ifdef AR_APPSFLYER_EXISTS
+    AppsFlyerProvider *provider = [[AppsFlyerProvider alloc] initWithITunesAppID:iTunesAppID key:key];
     [self setupProvider:provider];
 #endif
 }
@@ -550,3 +561,5 @@ const NSString *ARParseClientKey = @"ARParseClientKey";
 const NSString *ARHeapAppID = @"ARHeapAppID";
 const NSString *ARChartbeatID = @"ARChartbeatID";
 const NSString *ARAppseeAPIKey = @"ARAppseeAPIKey";
+const NSString *ARAppsFlyerKey = @"ARAppsFlyerKey";
+const NSString *ARItuneAppID = @"ARItuneAppID";
