@@ -115,6 +115,15 @@
 /// Adds to a user property if support exists in the provider
 + (void)incrementUserProperty:(NSString *)counterName byInt:(NSInteger)amount;
 
+/// Adds super properites
++ (void)addSuperProperties:(NSDictionary *)dictionary;
+
+/// Removes a super property
++ (void)removeSuperProperties:(NSString *)propertyName;
+
+/// Clears all super properties
++ (void)clearSuperProperties;
+
 /// Submit user events to providers
 + (void)event:(NSString *)event;
 

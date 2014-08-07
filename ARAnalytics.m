@@ -356,6 +356,27 @@ static ARAnalytics *_sharedAnalytics;
 }
 
 #pragma mark -
+#pragma mark Super Properties
+
++ (void)addSuperProperties:(NSDictionary *)dictionary {
+    [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
+        [provider addSuperProperties:dictionary];
+    }];
+}
+
++ (void)removeSuperProperties:(NSString *)propertyName {
+    [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
+        [provider removeSuperProperty:propertyName];
+    }];
+}
+
++ (void)clearSuperProperties {
+    [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
+        [provider clearSuperProperties];
+    }];
+}
+
+#pragma mark -
 #pragma mark Events
 
 
