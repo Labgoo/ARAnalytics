@@ -85,6 +85,7 @@
 
 #ifdef AR_APPSFLYER_EXISTS
 #import "AppsFlyerProvider.h"
+#endif
 
 #ifdef AR_UMENGANALYTICS_EXISTS
 #import "UMengAnalyticsProvider.h"
