@@ -12,8 +12,9 @@
 @implementation NewRelicProvider
 
 - (id)initWithIdentifier:(NSString *)identifier {
-    NSAssert([NewRelicAgent class], @"NewRelic is not included");
-    [NewRelicAgent startWithApplicationToken:identifier];
+    NSAssert([NewRelic class], @"NewRelic is not included");
+    [NewRelic startWithApplicationToken:identifier];
+    
     return [super init];
 }
 

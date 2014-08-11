@@ -2,8 +2,8 @@
 //  ARAnalytics.h
 //  Art.sy
 //
-//  Created by orta therox on 18/12/2012.
-//  Copyright (c) 2012 Art.sy. All rights reserved.
+//  Created by Orta Therox on 18/12/2012.
+//  Copyright (c) 2012 - Present Orta Therox & Art.sy. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -26,6 +26,17 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 
+// For OS X support we need to mock up UIVIewController/UINavigationViewController
+
+#if !TARGET_OS_IPHONE
+@interface UIViewController : NSObject @end
+@interface UINavigationController : NSObject @end
+@protocol UINavigationControllerDelegate <NSObject> @end
+#endif
+
+@class TSConfig;
+@class ARAnalyticalProvider;
+
 /**
  @class
  ARAnalytics Main Class.
@@ -39,9 +50,9 @@
  <pre>
 
  [ARAnalytics setupWithAnalytics: @{
-    ARCrittercismAppID : @"KEY",
-    ARKISSMetricsAPIKey : @"KEY",
-    ARGoogleAnalyticsID : @"KEY"
+ ARCrittercismAppID : @"KEY",
+ ARKISSMetricsAPIKey : @"KEY",
+ ARGoogleAnalyticsID : @"KEY"
  }];
 
  </pre>
@@ -49,17 +60,6 @@
  For more advanced usage, please see the <a
  href="https://github.com/orta/ARAnalytics">ARAnalytics Readme</a>.
  */
-
-// For OS X support we need to mock up UIVIewController/UINavigationViewController
-
-#if !TARGET_OS_IPHONE
-@interface UIViewController : NSObject @end
-@interface UINavigationController : NSObject @end
-@protocol UINavigationControllerDelegate <NSObject> @end
-#endif
-
-@class TSConfig;
-@class ARAnalyticalProvider;
 
 @interface ARAnalytics : NSObject <UINavigationControllerDelegate>
 
@@ -90,7 +90,7 @@
 + (void)setupChartbeatWithApplicationID:(NSString *)appID;
 + (void)setupAppseeWithAPIKey:(NSString *)key;
 + (void)setupAppsFlyerWithITunesAppID:(NSString *)iTunesAppID key:(NSString *)key;
-
++ (void)setupLibratoWithEmail:(NSString *)email token:(NSString *)token prefix:(NSString *)prefix;
 
 /// Add a provider manually
 + (void)setupProvider:(ARAnalyticalProvider *)provider;
@@ -195,3 +195,7 @@ extern const NSString *ARChartbeatID;
 extern const NSString *ARAppseeAPIKey;
 extern const NSString *ARAppsFlyerKey;
 extern const NSString *ARItuneAppID;
+extern const NSString *ARUMengAnalyticsID;
+extern const NSString *ARLibratoEmail;
+extern const NSString *ARLibratoToken;
+extern const NSString *ARLibratoPrefix;

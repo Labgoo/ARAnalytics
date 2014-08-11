@@ -128,6 +128,14 @@ static ARAnalytics *_sharedAnalytics;
     if (analyticsDictionary[ARChartbeatID]) {
         [self setupChartbeatWithApplicationID:analyticsDictionary[ARChartbeatID]];
     }
+    
+    if (analyticsDictionary[ARUMengAnalyticsID]) {
+        [self setupUMengAnalyticsIDWithAppkey:analyticsDictionary[ARUMengAnalyticsID]];
+    }
+    
+    if (analyticsDictionary[ARLibratoEmail] && analyticsDictionary[ARLibratoToken]) {
+        [self setupLibratoWithEmail:analyticsDictionary[ARLibratoEmail] token:analyticsDictionary[ARLibratoToken] prefix:analyticsDictionary[ARLibratoPrefix]];
+    }
 
     if (analyticsDictionary[ARAppseeAPIKey]) {
         [self setupAppseeWithAPIKey:analyticsDictionary[ARAppseeAPIKey]];
@@ -179,7 +187,9 @@ static ARAnalytics *_sharedAnalytics;
 }
 
 + (void)setupMixpanelWithToken:(NSString *)token {
+#ifdef AR_MIXPANEL_EXISTS
     [self setupMixpanelWithToken:token andHost:nil];
+#endif
 }
 
 + (void)setupMixpanelWithToken:(NSString *)token andHost:(NSString *)host {
@@ -321,7 +331,19 @@ static ARAnalytics *_sharedAnalytics;
 #endif
 }
 
++ (void)setupUMengAnalyticsIDWithAppkey:(NSString *)appID {
+#ifdef AR_UMENGANALYTICS_EXISTS
+    UMengAnalyticsProvider *provider = [[UMengAnalyticsProvider alloc] initWithIdentifier:appID];
+    [self setupProvider:provider];
+#endif
+}
 
++ (void)setupLibratoWithEmail:(NSString *)email token:(NSString *)token prefix:(NSString *)prefix {
+#ifdef AR_LIBRATO_EXISTS
+    LibratoProvider *provider = [[LibratoProvider alloc] initWithEmail:email token:token prefix:prefix];
+    [self setupProvider:provider];
+#endif
+}
 
 #pragma mark -
 #pragma mark User Setup
@@ -563,3 +585,7 @@ const NSString *ARChartbeatID = @"ARChartbeatID";
 const NSString *ARAppseeAPIKey = @"ARAppseeAPIKey";
 const NSString *ARAppsFlyerKey = @"ARAppsFlyerKey";
 const NSString *ARItuneAppID = @"ARItuneAppID";
+const NSString *ARUMengAnalyticsID = @"ARUMengAnalyticsID";
+const NSString *ARLibratoEmail = @"ARLibratoEmail";
+const NSString *ARLibratoToken = @"ARLibratoToken";
+const NSString *ARLibratoPrefix = @"ARLibratoPrefix";
