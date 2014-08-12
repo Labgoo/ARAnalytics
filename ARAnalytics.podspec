@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   # s.description is at the bottom as it is partially generated.
 
   testflight_sdk = { :spec_name => "TestFlight",       :dependency => ["TestFlightSDK", "BPXLUUIDHandler"] }
-  mixpanel       = { :spec_name => "Mixpanel",         :dependency => "Mixpanel", :has_extension => true }
+  mixpanel       = { :spec_name => "Mixpanel",         :dependency => "Mixpanel" }
   localytics     = { :spec_name => "Localytics",       :dependency => "Localytics-iOS-Client" }
   flurry         = { :spec_name => "Flurry",           :dependency => "FlurrySDK" }
   google         = { :spec_name => "GoogleAnalytics",  :dependency => "GoogleAnalytics-iOS-SDK", :has_extension => true }

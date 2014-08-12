@@ -20,6 +20,10 @@ static NSString *const ARTimingEventLengthKey = @"length";
 - (void)identifyUserWithID:(NSString *)userID andEmailAddress:(NSString *)email {}
 - (void)setUserProperty:(NSString *)property toValue:(NSString *)value {}
 
+- (void)addSuperProperties:(NSDictionary *)properties {}
+- (void)removeSuperProperty:(NSString *)propertyName {}
+- (void)clearSuperProperties {}
+
 - (void)event:(NSString *)event withProperties:(NSDictionary *)properties {}
 - (void)incrementUserProperty:(NSString *)counterName byInt:(NSNumber *)amount {}
 

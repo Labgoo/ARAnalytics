@@ -52,5 +52,17 @@
     [[Mixpanel sharedInstance] track:event properties:properties];
 }
 
+- (void)addSuperProperties:(NSDictionary *)properties {
+    [[Mixpanel sharedInstance] registerSuperProperties:properties];
+}
+
+- (void)removeSuperProperty:(NSString *)propertyName {
+    [[Mixpanel sharedInstance] unregisterSuperProperty:propertyName];
+}
+
+- (void)clearSuperProperties {
+    [[Mixpanel sharedInstance] clearSuperProperties];
+}
+
 #endif
 @end

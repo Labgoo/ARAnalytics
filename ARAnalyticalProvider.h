@@ -16,6 +16,11 @@
 - (void)identifyUserWithID:(NSString *)userID andEmailAddress:(NSString *)email;
 - (void)setUserProperty:(NSString *)property toValue:(NSString *)value;
 
+/// Set super properties
+- (void)addSuperProperties:(NSDictionary *)properties;
+- (void)removeSuperProperty:(NSString *)propertyName;
+- (void)clearSuperProperties;
+
 /// Submit user events
 - (void)event:(NSString *)event withProperties:(NSDictionary *)properties;
 - (void)incrementUserProperty:(NSString *)counterName byInt:(NSNumber *)amount;
