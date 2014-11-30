@@ -93,13 +93,8 @@
 }
 
 - (void)didShowNewPageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties {
-    NSMutableDictionary *combinedAttributes = [NSMutableDictionary dictionaryWithCapacity:properties.count];
-    [combinedAttributes setObject:pageTitle forKey:@"label"];
-    if (properties != nil) {
-        [combinedAttributes addEntriesFromDictionary:properties];
-    }
-
-    [self event:@"Screen view" withProperties:combinedAttributes];
+    // Note - we ignore properties here as google doesnt support sending custom properties
+    [self event:@"Screen view" withProperties:@{ @"label": pageTitle }];
     [self.tracker set:kGAIScreenName value:pageTitle];
     [self.tracker send:[[GAIDictionaryBuilder createAppView] build]];
 }
