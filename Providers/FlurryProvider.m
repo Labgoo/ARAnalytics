@@ -43,7 +43,12 @@ static const NSUInteger kFlurryMaximumNumberOfParameters = 10;
 }
 
 - (void)didShowNewPageView:(NSString *)pageTitle {
-    [self event:@"Screen view" withProperties:@{ @"screen": pageTitle }];
+    [super didShowNewPageView:pageTitle];
+    [Flurry logPageView];
+}
+
+- (void)didShowNewPageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties {
+    [super didShowNewPageView:pageTitle withProperties:properties];
     [Flurry logPageView];
 }
 

@@ -138,6 +138,8 @@
 
 /// Monitor Navigation changes as page view
 + (void)pageView:(NSString *)pageTitle;
++ (void)pageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties;
+
 
 #if TARGET_OS_IPHONE
 /// Monitor a navigation controller, submitting each [ARAnalytics pageView:] on didShowViewController

@@ -89,10 +89,21 @@
 }
 
 - (void)didShowNewPageView:(NSString *)pageTitle {
-    [self event:@"Screen view" withProperties:@{ @"label": pageTitle }];
+    [self didShowNewPageView:pageTitle withProperties:nil];
+}
+
+- (void)didShowNewPageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties {
+    NSMutableDictionary *combinedAttributes = [NSMutableDictionary dictionaryWithCapacity:properties.count];
+    [combinedAttributes setObject:pageTitle forKey:@"label"];
+    if (properties != nil) {
+        [combinedAttributes addEntriesFromDictionary:properties];
+    }
+
+    [self event:@"Screen view" withProperties:combinedAttributes];
     [self.tracker set:kGAIScreenName value:pageTitle];
     [self.tracker send:[[GAIDictionaryBuilder createAppView] build]];
 }
+
 
 - (void)logTimingEvent:(NSString *)event withInterval:(NSNumber *)interval  properties:(NSDictionary *)properties{
     // Prepare properties dictionary
