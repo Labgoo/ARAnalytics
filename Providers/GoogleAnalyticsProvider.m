@@ -99,7 +99,6 @@
     [self.tracker send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
-
 - (void)logTimingEvent:(NSString *)event withInterval:(NSNumber *)interval  properties:(NSDictionary *)properties{
     // Prepare properties dictionary
     if (!properties) {

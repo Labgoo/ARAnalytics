@@ -44,7 +44,6 @@ static const NSUInteger kFlurryMaximumNumberOfParameters = 10;
 
 - (void)didShowNewPageView:(NSString *)pageTitle {
     [self didShowNewPageView:pageTitle withProperties:nil];
-    [Flurry logPageView];
 }
 
 - (void)didShowNewPageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties {
