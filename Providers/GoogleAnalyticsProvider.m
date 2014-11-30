@@ -89,6 +89,11 @@
 }
 
 - (void)didShowNewPageView:(NSString *)pageTitle {
+    [self didShowNewPageView:pageTitle withProperties:nil];
+}
+
+- (void)didShowNewPageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties {
+    // Note - we ignore properties here as google doesnt support sending custom properties
     [self event:@"Screen view" withProperties:@{ @"label": pageTitle }];
     [self.tracker set:kGAIScreenName value:pageTitle];
     [self.tracker send:[[GAIDictionaryBuilder createAppView] build]];

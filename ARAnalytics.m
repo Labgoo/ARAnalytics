@@ -438,6 +438,14 @@ static ARAnalytics *_sharedAnalytics;
     }];
 }
 
++ (void)pageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties {
+    if (!pageTitle) return;
+    
+    [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
+        [provider didShowNewPageView:pageTitle withProperties:properties];
+    }];
+}
+
 + (void)monitorNavigationViewController:(UINavigationController *)controller {
     [self monitorNavigationController:controller];
 }

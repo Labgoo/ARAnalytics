@@ -63,7 +63,21 @@ static NSString *const ARTimingEventLengthKey = @"length";
 }
 
 - (void)didShowNewPageView:(NSString *)pageTitle {
-    [self event:@"Screen view" withProperties:@{ @"screen": pageTitle }];
+    [self didShowNewPageView:pageTitle withProperties:nil];
+}
+
+- (void)didShowNewPageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties {
+    NSDictionary *propertiesToSend;
+    if (properties != nil) {
+        NSMutableDictionary *combined = [NSMutableDictionary dictionaryWithCapacity:properties.count];
+        [combined setObject:pageTitle forKey:@"screen"];
+        [combined addEntriesFromDictionary:properties];
+        propertiesToSend = combined;
+    } else {
+        propertiesToSend = properties;
+    }
+    
+    [self event:@"Screen view" withProperties:propertiesToSend];
 }
 
 - (void)remoteLog:(NSString *)parsedString {}

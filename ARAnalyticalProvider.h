@@ -40,6 +40,7 @@
 
 /// Pass a specific event for showing a page
 - (void)didShowNewPageView:(NSString *)pageTitle;
+- (void)didShowNewPageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties;
 
 /// Submit a string to the provider's logging system
 - (void)remoteLog:(NSString *)parsedString;
