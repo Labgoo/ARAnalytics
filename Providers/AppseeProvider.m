@@ -38,7 +38,7 @@ static NSString *const kAppseeProviderSuperPropertiesKey = @"superProperties";
 
 #ifdef AR_APPSEE_EXISTS
 /*!
-    @param email is ignored by Appsee
+ @param email is ignored by Appsee
  */
 - (void)identifyUserWithID:(NSString *)userID andEmailAddress:(NSString *)email {
     [Appsee setUserID:userID];
@@ -70,9 +70,12 @@ static NSString *const kAppseeProviderSuperPropertiesKey = @"superProperties";
 }
 
 - (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
-    properties = [properties copy];
-    NSMutableDictionary *propertiesWithSuperProperties = [NSMutableDictionary dictionaryWithDictionary:self.superProperties];
-    [propertiesWithSuperProperties addEntriesFromDictionary:properties];
+    NSMutableDictionary *propertiesWithSuperProperties = nil;
+    if (self.shouldRegressProperties == NO) {
+        properties = [properties copy];
+        propertiesWithSuperProperties = [NSMutableDictionary dictionaryWithDictionary:self.superProperties];
+        [propertiesWithSuperProperties addEntriesFromDictionary:properties];
+    }
     
     [Appsee addEvent:event withProperties:propertiesWithSuperProperties];
 }
@@ -86,9 +89,9 @@ static NSString *const kAppseeProviderSuperPropertiesKey = @"superProperties";
     NSDictionary *data = @{
                            kAppseeProviderSuperPropertiesKey : self.superProperties
                            };
-
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		if (![NSKeyedArchiver archiveRootObject:data toFile:filePath]) {
+        if (![NSKeyedArchiver archiveRootObject:data toFile:filePath]) {
             NSLog(@"%@ unable to archive events data", self);
         }
     });

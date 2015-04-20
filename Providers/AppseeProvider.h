@@ -6,5 +6,8 @@
 #import "ARAnalyticalProvider.h"
 
 @interface AppseeProvider : ARAnalyticalProvider
+
+@property (nonatomic) BOOL shouldRegressProperties;
+
 @end
 

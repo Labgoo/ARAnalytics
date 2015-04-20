@@ -40,23 +40,23 @@
 /**
  @class
  ARAnalytics Main Class.
-
+ 
  @abstract
  The primary interface for dealing with in app Analytics.
-
+ 
  @discussion
  Use the ARAnalytics class to set up your analytics provider and track events.
-
+ 
  <pre>
-
+ 
  [ARAnalytics setupWithAnalytics: @{
  ARCrittercismAppID : @"KEY",
  ARKISSMetricsAPIKey : @"KEY",
  ARGoogleAnalyticsID : @"KEY"
  }];
-
+ 
  </pre>
-
+ 
  For more advanced usage, please see the <a
  href="https://github.com/orta/ARAnalytics">ARAnalytics Readme</a>.
  */
@@ -88,7 +88,7 @@
 + (void)setupParseAnalyticsWithApplicationID:(NSString *)appID clientKey:(NSString *)clientKey;
 + (void)setupHeapAnalyticsWithApplicationID:(NSString *)appID;
 + (void)setupChartbeatWithApplicationID:(NSString *)appID;
-+ (void)setupAppseeWithAPIKey:(NSString *)key;
++ (void)setupAppseeWithAPIKey:(NSString *)key regressProperties:(BOOL)shouldRegressProperties;
 + (void)setupAppsFlyerWithITunesAppID:(NSString *)iTunesAppID key:(NSString *)key;
 + (void)setupLibratoWithEmail:(NSString *)email token:(NSString *)token prefix:(NSString *)prefix;
 
@@ -203,6 +203,7 @@ extern const NSString *ARParseApplicationID;
 extern const NSString *ARParseClientKey;
 extern const NSString *ARHeapAppID;
 extern const NSString *ARChartbeatID;
+extern const NSString *ARAppseeRegressProperties;
 extern const NSString *ARAppseeAPIKey;
 extern const NSString *ARAppsFlyerKey;
 extern const NSString *ARItuneAppID;
