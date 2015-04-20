@@ -60,39 +60,39 @@ static ARAnalytics *_sharedAnalytics;
 #pragma mark -
 #pragma mark Analytics Setup
 
-// By using the constants at the bottom you can 
+// By using the constants at the bottom you can
 
 + (void)setupWithAnalytics:(NSDictionary *)analyticsDictionary {
     if (analyticsDictionary[ARTestFlightAppToken]) {
         [self setupTestFlightWithAppToken:analyticsDictionary[ARTestFlightAppToken]];
     }
-
+    
     if (analyticsDictionary[ARFlurryAPIKey]) {
         [self setupFlurryWithAPIKey:analyticsDictionary[ARFlurryAPIKey]];
     }
-
+    
     if (analyticsDictionary[ARGoogleAnalyticsID]) {
         [self setupGoogleAnalyticsWithID:analyticsDictionary[ARGoogleAnalyticsID]];
     }
-
+    
     if (analyticsDictionary[ARKISSMetricsAPIKey]) {
         [self setupKISSMetricsWithAPIKey:analyticsDictionary[ARKISSMetricsAPIKey]];
     }
-
+    
     if (analyticsDictionary[ARLocalyticsAppKey]) {
         [self setupLocalyticsWithAppKey:analyticsDictionary[ARLocalyticsAppKey]];
     }
-
+    
     if (analyticsDictionary[ARMixpanelToken]) {
         // ARMixpanelHost is nil if you want the default provider. So we can make
         // the presumption of it here.
         [self setupMixpanelWithToken:analyticsDictionary[ARMixpanelToken] andHost:analyticsDictionary[ARMixpanelHost]];
     }
-
+    
     if (analyticsDictionary[ARCountlyAppKey] && analyticsDictionary[ARCountlyHost]) {
         [self setupCountlyWithAppKey:analyticsDictionary[ARCountlyAppKey] andHost:analyticsDictionary[ARCountlyHost]];
     }
-
+    
     if (analyticsDictionary[ARBugsnagAPIKey]) {
         [self setupBugsnagWithAPIKey:analyticsDictionary[ARBugsnagAPIKey]];
     }
@@ -112,7 +112,7 @@ static ARAnalytics *_sharedAnalytics;
     if (analyticsDictionary[ARAmplitudeAPIKey]) {
         [self setupAmplitudeWithAPIKey:analyticsDictionary[ARAmplitudeAPIKey]];
     }
-
+    
     if (analyticsDictionary[ARHockeyAppBetaID]) {
         [self setupHockeyAppWithBetaID:analyticsDictionary[ARHockeyAppBetaID] liveID:analyticsDictionary[ARHockeyAppLiveID]];
     }
@@ -120,7 +120,7 @@ static ARAnalytics *_sharedAnalytics;
     if (analyticsDictionary[ARParseApplicationID] && analyticsDictionary[ARParseClientKey]) {
         [self setupParseAnalyticsWithApplicationID:analyticsDictionary[ARParseApplicationID] clientKey:analyticsDictionary[ARParseClientKey]];
     }
-
+    
     if (analyticsDictionary[ARHeapAppID]) {
         [self setupHeapAnalyticsWithApplicationID:analyticsDictionary[ARHeapAppID]];
     }
@@ -136,22 +136,22 @@ static ARAnalytics *_sharedAnalytics;
     if (analyticsDictionary[ARLibratoEmail] && analyticsDictionary[ARLibratoToken]) {
         [self setupLibratoWithEmail:analyticsDictionary[ARLibratoEmail] token:analyticsDictionary[ARLibratoToken] prefix:analyticsDictionary[ARLibratoPrefix]];
     }
-
+    
     if (analyticsDictionary[ARAppseeAPIKey]) {
-        [self setupAppseeWithAPIKey:analyticsDictionary[ARAppseeAPIKey]];
+        [self setupAppseeWithAPIKey:analyticsDictionary[ARAppseeAPIKey] regressProperties:[analyticsDictionary[ARAppseeRegressProperties] boolValue]];
     }
     
     if (analyticsDictionary[ARAppsFlyerKey] && analyticsDictionary[ARItuneAppID]) {
         [self setupAppsFlyerWithITunesAppID:analyticsDictionary[ARItuneAppID] key:analyticsDictionary[ARAppsFlyerKey]];
     }
-
+    
     // Crashlytics / Crittercism should stay at the bottom of this,
     // as they both need to register exceptions, and you'd only use one.
-
+    
     if (analyticsDictionary[ARCrashlyticsAPIKey]) {
         [self setupCrashlyticsWithAPIKey:analyticsDictionary[ARCrashlyticsAPIKey]];
     }
-
+    
     if (analyticsDictionary[ARCrittercismAppID]) {
         [self setupCrittercismWithAppID:analyticsDictionary[ARCrittercismAppID]];
     }
@@ -278,7 +278,7 @@ static ARAnalytics *_sharedAnalytics;
 
 + (void)setupAmplitudeWithAPIKey:(NSString *)key {
 #ifdef AR_AMPLITUDE_EXISTS
-     AmplitudeProvider *provider = [[AmplitudeProvider alloc] initWithIdentifier:key];
+    AmplitudeProvider *provider = [[AmplitudeProvider alloc] initWithIdentifier:key];
     [self setupProvider:provider];
 #endif
 }
@@ -317,9 +317,10 @@ static ARAnalytics *_sharedAnalytics;
 #endif
 }
 
-+ (void)setupAppseeWithAPIKey:(NSString *)key {
++ (void)setupAppseeWithAPIKey:(NSString *)key regressProperties:(BOOL)shouldRegressProperties{
 #ifdef AR_APPSEE_EXISTS
     AppseeProvider *provider = [[AppseeProvider alloc] initWithIdentifier:key];
+    provider.shouldRegressProperties = shouldRegressProperties;
     [self setupProvider:provider];
 #endif
 }
@@ -365,7 +366,7 @@ static ARAnalytics *_sharedAnalytics;
         NSLog(@"ARAnalytics: Value cannot be nil ( %@ ) ", property);
         return;
     }
-
+    
     [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
         [provider setUserProperty:property toValue:value];
     }];
@@ -408,7 +409,7 @@ static ARAnalytics *_sharedAnalytics;
 
 + (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
     NSDictionary *combinedProperties = [_sharedAnalytics mergeProperties:properties forEvent:event];
-
+    
     [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
         [provider event:event withProperties:combinedProperties];
     }];
@@ -451,7 +452,7 @@ static ARAnalytics *_sharedAnalytics;
 }
 
 + (void)monitorNavigationController:(UINavigationController *)controller {
-
+    
 #if TARGET_OS_IPHONE
     // Set a new original delegate on the proxy
     _sharedAnalytics.proxyDelegate.originalDelegate = controller.delegate;
@@ -502,7 +503,7 @@ static ARAnalytics *_sharedAnalytics;
         NSLog(@"ARAnalytics: finish timing event called without a corrosponding start timing event");
         return;
     }
-
+    
     NSTimeInterval eventInterval = [[NSDate date] timeIntervalSinceDate:startDate];
     [_sharedAnalytics.eventsDictionary removeObjectForKey:event];
     
@@ -516,7 +517,7 @@ static ARAnalytics *_sharedAnalytics;
 
 + (BOOL)isTrackingEvent:(NSString *)event {
     return _sharedAnalytics.eventsDictionary[event] != nil
-            || _sharedAnalytics.eventsPropertiesDictionary[event] != nil;
+    || _sharedAnalytics.eventsPropertiesDictionary[event] != nil;
 }
 
 + (void)addProperties:(NSDictionary *)properties forEvent:(NSString *)event {
@@ -543,7 +544,7 @@ static ARAnalytics *_sharedAnalytics;
     if (!savedProperties) {
         return properties;
     }
-
+    
     NSMutableDictionary *combinedProperties = [NSMutableDictionary dictionaryWithDictionary:savedProperties];
     [combinedProperties addEntriesFromDictionary:properties];
     
@@ -561,28 +562,28 @@ void ARLog (NSString *format, ...) {
     va_list argList;
     va_start(argList, format);
     // Perform format string argument substitution, reinstate %% escapes, then print
-
+    
     @autoreleasepool {
-      NSString *parsedFormatString = [[NSString alloc] initWithFormat:format arguments:argList];
-      parsedFormatString = [parsedFormatString stringByReplacingOccurrencesOfString:@"%%" withString:@"%%%%"];
-      printf("ARLog : %s\n", parsedFormatString.UTF8String);
-
-      [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
-          [provider remoteLog:parsedFormatString];
-      }];
+        NSString *parsedFormatString = [[NSString alloc] initWithFormat:format arguments:argList];
+        parsedFormatString = [parsedFormatString stringByReplacingOccurrencesOfString:@"%%" withString:@"%%%%"];
+        printf("ARLog : %s\n", parsedFormatString.UTF8String);
+        
+        [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
+            [provider remoteLog:parsedFormatString];
+        }];
     }
-
+    
     va_end(argList);
 }
 
 void ARAnalyticsEvent (NSString *event, NSDictionary *properties) {
-  @try {
-    [ARAnalytics event:event withProperties:properties];
-  }
-
-  @catch (NSException *exception) {
-    NSLog(@"ARAnalytics: Exception raised when handling event %@ - %@ - %@", event, exception.name, exception.reason);
-  }
+    @try {
+        [ARAnalytics event:event withProperties:properties];
+    }
+    
+    @catch (NSException *exception) {
+        NSLog(@"ARAnalytics: Exception raised when handling event %@ - %@ - %@", event, exception.name, exception.reason);
+    }
 }
 
 const NSString *ARCountlyAppKey = @"ARCountlyAppKey";
@@ -611,6 +612,7 @@ const NSString *ARParseApplicationID = @"ARParseApplicationID";
 const NSString *ARParseClientKey = @"ARParseClientKey";
 const NSString *ARHeapAppID = @"ARHeapAppID";
 const NSString *ARChartbeatID = @"ARChartbeatID";
+const NSString *ARAppseeRegressProperties = @"ARAppseeRegressProperties";
 const NSString *ARAppseeAPIKey = @"ARAppseeAPIKey";
 const NSString *ARAppsFlyerKey = @"ARAppsFlyerKey";
 const NSString *ARItuneAppID = @"ARItuneAppID";
