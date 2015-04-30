@@ -144,6 +144,11 @@ static ARAnalytics *_sharedAnalytics;
     if (analyticsDictionary[ARAppsFlyerKey] && analyticsDictionary[ARItuneAppID]) {
         [self setupAppsFlyerWithITunesAppID:analyticsDictionary[ARItuneAppID] key:analyticsDictionary[ARAppsFlyerKey]];
     }
+
+    if (analyticsDictionary[ARIntercomApiKey] && analyticsDictionary[ARIntercomAppId]) {
+        [self setupIntercomWithApiKey:analyticsDictionary[ARIntercomApiKey]
+                             forAppId:analyticsDictionary[ARIntercomAppId]];
+    }
     
     // Crashlytics / Crittercism should stay at the bottom of this,
     // as they both need to register exceptions, and you'd only use one.
@@ -343,6 +348,13 @@ static ARAnalytics *_sharedAnalytics;
 #ifdef AR_LIBRATO_EXISTS
     LibratoProvider *provider = [[LibratoProvider alloc] initWithEmail:email token:token prefix:prefix];
     [self setupProvider:provider];
+#endif
+}
+
++ (void)setupIntercomWithApiKey:(NSString *)apiKey forAppId:(NSString *)appId {
+#ifdef AR_INTERCOM_EXISTS
+    IntercomProvider *provider = [[IntercomProvider alloc] initWithApiKey:apiKey forAppId:appId];
+    [self setupProvider:provider]; 
 #endif
 }
 
@@ -620,3 +632,5 @@ const NSString *ARUMengAnalyticsID = @"ARUMengAnalyticsID";
 const NSString *ARLibratoEmail = @"ARLibratoEmail";
 const NSString *ARLibratoToken = @"ARLibratoToken";
 const NSString *ARLibratoPrefix = @"ARLibratoPrefix";
+const NSString *ARIntercomApiKey = @"ARInteSetuprcomApiKey";
+const NSString *ARIntercomAppId = @"ARIntercomAppId";

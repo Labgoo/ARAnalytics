@@ -91,6 +91,7 @@
 + (void)setupAppseeWithAPIKey:(NSString *)key regressProperties:(BOOL)shouldRegressProperties;
 + (void)setupAppsFlyerWithITunesAppID:(NSString *)iTunesAppID key:(NSString *)key;
 + (void)setupLibratoWithEmail:(NSString *)email token:(NSString *)token prefix:(NSString *)prefix;
++ (void)setupIntercomWithApiKey:(NSString *)apiKey forAppId:(NSString *)appId;
 
 /// Add a provider manually
 + (void)setupProvider:(ARAnalyticalProvider *)provider;
@@ -211,3 +212,5 @@ extern const NSString *ARUMengAnalyticsID;
 extern const NSString *ARLibratoEmail;
 extern const NSString *ARLibratoToken;
 extern const NSString *ARLibratoPrefix;
+extern const NSString *ARIntercomApiKey;
+extern const NSString *ARIntercomAppId;

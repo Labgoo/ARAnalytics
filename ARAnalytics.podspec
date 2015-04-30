@@ -35,12 +35,13 @@ Pod::Spec.new do |s|
   umeng          = { :spec_name => "UMengAnalytics",   :dependency => "UMengAnalytics" }
   librato        = { :spec_name => "Librato" }
   crashlytics    = { :spec_name => "Crashlytics" }
+  intercom       = { :spec_name => "Intercom",         :dependency => "Intercom", :has_extension => true }
 
   kissmetrics_mac = { :spec_name => "KISSmetricsOSX",  :dependency => "KISSmetrics",            :osx => true,  :provider => "KISSmetrics" }
 #  countly_mac     = { :spec_name => "CountlyOSX",      :dependency => "Countly",                :osx => true,  :provider => "Countly" }
   mixpanel_mac    = { :spec_name => "MixpanelOSX",     :dependency => "Mixpanel-OSX-Community", :osx => true,  :provider => "Mixpanel"}
 
-  $all_analytics = [testflight_sdk, mixpanel, localytics, flurry, google, kissmetrics, crittercism, crashlytics, bugsnag, countly, helpshift,kissmetrics_mac, mixpanel_mac, tapstream, newRelic, amplitude, hockeyApp, parseAnalytics, heap, chartbeat, appsee, appsflyer, umeng, librato]
+  $all_analytics = [testflight_sdk, mixpanel, localytics, flurry, google, kissmetrics, crittercism, crashlytics, bugsnag, countly, helpshift,kissmetrics_mac, mixpanel_mac, tapstream, newRelic, amplitude, hockeyApp, parseAnalytics, heap, chartbeat, appsee, appsflyer, umeng, librato, intercom]
 
   # To make the pod spec API cleaner, subspecs are "iOS/KISSmetrics"
 
