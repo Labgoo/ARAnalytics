@@ -1,5 +1,5 @@
 //
-//  Created by Minh Tu Le 10/04/2014.
+//  Created by Lior Rozner.
 //  Copyright (c) 2014 Wondermall inc. All rights reserved.
 //
 

@@ -8,7 +8,7 @@ static NSString *const kIntercomSuperPropertiesKey = @"superProperties";
 
 @interface IntercomProvider ()
 
-@property(nonatomic, strong) NSDictionary *superProperties;
+@property(nonatomic, copy) NSDictionary *superProperties;
 
 @end
 
@@ -18,8 +18,11 @@ static NSString *const kIntercomSuperPropertiesKey = @"superProperties";
 #ifdef AR_INTERCOM_EXISTS
 
 - (id)initWithApiKey:(NSString *)apiKey forAppId:(NSString *)appId {
-    [Intercom setApiKey:apiKey forAppId:appId];
 	self = [super init];
+    if (!self) {
+        return nil;
+    }
+    [Intercom setApiKey:apiKey forAppId:appId];
     [self _unarchiveData];
     return self;
 }
@@ -29,7 +32,7 @@ static NSString *const kIntercomSuperPropertiesKey = @"superProperties";
 }
 
 - (void)didShowNewPageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties {
-    NSString *event = [NSString stringWithFormat:@"View @%", pageTitle];
+    NSString *event = [NSString stringWithFormat:@"View %@", pageTitle];
     [Intercom logEventWithName:event metaData:properties];
 }
 
@@ -43,21 +46,20 @@ static NSString *const kIntercomSuperPropertiesKey = @"superProperties";
 #pragma mark - Super Properties
 
 - (void)addSuperProperties:(NSDictionary *)properties {
-    properties = [properties copy];
     [self _assertPropertyTypes:properties];
     
-    NSMutableDictionary *mutableSuperProperties = [NSMutableDictionary dictionaryWithDictionary:self.superProperties];
+    NSMutableDictionary *mutableSuperProperties = [properties mutableCopy];
     [mutableSuperProperties addEntriesFromDictionary:properties];
-    self.superProperties = [mutableSuperProperties copy];
+    self.superProperties = mutableSuperProperties;
     
     [self _updateUserWithAttributes];
     [self _archiveData];
 }
 
 - (void)removeSuperProperty:(NSString *)propertyName {
-    NSMutableDictionary *temp = [NSMutableDictionary dictionaryWithDictionary:self.superProperties];
-    [temp removeObjectForKey:propertyName];
-    self.superProperties = [temp copy];
+    NSMutableDictionary *mutableSuperProperties = [self.superProperties mutableCopy];
+    [mutableSuperProperties removeObjectForKey:propertyName];
+    self.superProperties = mutableSuperProperties;
     
     [self _updateUserWithAttributes];
     [self _archiveData];
@@ -95,14 +97,13 @@ static NSString *const kIntercomSuperPropertiesKey = @"superProperties";
     }
     
     if (data) {
-        self.superProperties = data[kIntercomSuperPropertiesKey] ? data[kIntercomSuperPropertiesKey] : @{};
+        self.superProperties = data[kIntercomSuperPropertiesKey] ?: @{};
     }
 }
 
 - (NSString *)_dataFilePath {
-    NSString *filename = [NSString stringWithFormat:@"ARAnalytics-IntercomProvider-data.plist"];
     return [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject]
-            stringByAppendingPathComponent:filename];
+            stringByAppendingPathComponent:@"ARAnalytics-IntercomProvider-data.plist"];
 }
 
 - (void)_assertPropertyTypes:(NSDictionary *)properties {
