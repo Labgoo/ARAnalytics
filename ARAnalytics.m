@@ -144,6 +144,11 @@ static ARAnalytics *_sharedAnalytics;
     if (analyticsDictionary[ARAppsFlyerKey] && analyticsDictionary[ARItuneAppID]) {
         [self setupAppsFlyerWithITunesAppID:analyticsDictionary[ARItuneAppID] key:analyticsDictionary[ARAppsFlyerKey]];
     }
+
+    if (analyticsDictionary[ARIntercomApiKey] && analyticsDictionary[ARIntercomAppId]) {
+        [self setupIntercomWithApiKey:analyticsDictionary[ARIntercomApiKey]
+                             forAppId:analyticsDictionary[ARIntercomAppId]];
+    }
     
     // Crashlytics / Crittercism should stay at the bottom of this,
     // as they both need to register exceptions, and you'd only use one.
@@ -343,6 +348,13 @@ static ARAnalytics *_sharedAnalytics;
 #ifdef AR_LIBRATO_EXISTS
     LibratoProvider *provider = [[LibratoProvider alloc] initWithEmail:email token:token prefix:prefix];
     [self setupProvider:provider];
+#endif
+}
+
++ (void)setupIntercomWithApiKey:(NSString *)apiKey forAppId:(NSString *)appId {
+#ifdef AR_INTERCOM_EXISTS
+    IntercomProvider *provider = [[IntercomProvider alloc] initWithApiKey:apiKey forAppId:appId];
+    [self setupProvider:provider]; 
 #endif
 }
 
@@ -586,37 +598,39 @@ void ARAnalyticsEvent (NSString *event, NSDictionary *properties) {
     }
 }
 
-const NSString *ARCountlyAppKey = @"ARCountlyAppKey";
-const NSString *ARCountlyHost = @"ARCountlyHost";
-const NSString *ARTestFlightAppToken = @"ARTestFlight";
-const NSString *ARCrashlyticsAPIKey = @"ARCrashlytics";
-const NSString *ARMixpanelToken = @"ARMixpanel";
-const NSString *ARMixpanelHost = @"ARMixpanelHost";
-const NSString *ARFlurryAPIKey = @"ARFlurry";
-const NSString *ARBugsnagAPIKey = @"ARBugsnag";
-const NSString *ARLocalyticsAppKey = @"ARLocalytics";
-const NSString *ARKISSMetricsAPIKey = @"ARKISSMetrics";
-const NSString *ARCrittercismAppID = @"ARCrittercism";
-const NSString *ARGoogleAnalyticsID = @"ARGoogleAnalytics";
-const NSString *ARHelpshiftAppID = @"ARHelpshiftAppID";
-const NSString *ARHelpshiftDomainName = @"ARHelpshiftDomainName";
-const NSString *ARHelpshiftAPIKey = @"ARHelpshiftAPIKey";
-const NSString *ARTapstreamAccountName = @"ARTapstreamAccountName";
-const NSString *ARTapstreamDeveloperSecret = @"ARTapstreamDeveloperSecret";
-const NSString *ARTapstreamConfig = @"ARTapstreamConfig";
-const NSString *ARNewRelicAppToken = @"ARNewRelicAppToken";
-const NSString *ARAmplitudeAPIKey = @"ARAmplitudeAPIKey";
-const NSString *ARHockeyAppLiveID = @"ARHockeyAppLiveID";
-const NSString *ARHockeyAppBetaID = @"ARHockeyAppBetaID";
-const NSString *ARParseApplicationID = @"ARParseApplicationID";
-const NSString *ARParseClientKey = @"ARParseClientKey";
-const NSString *ARHeapAppID = @"ARHeapAppID";
-const NSString *ARChartbeatID = @"ARChartbeatID";
-const NSString *ARAppseeRegressProperties = @"ARAppseeRegressProperties";
-const NSString *ARAppseeAPIKey = @"ARAppseeAPIKey";
-const NSString *ARAppsFlyerKey = @"ARAppsFlyerKey";
-const NSString *ARItuneAppID = @"ARItuneAppID";
-const NSString *ARUMengAnalyticsID = @"ARUMengAnalyticsID";
-const NSString *ARLibratoEmail = @"ARLibratoEmail";
-const NSString *ARLibratoToken = @"ARLibratoToken";
-const NSString *ARLibratoPrefix = @"ARLibratoPrefix";
+NSString *const ARCountlyAppKey = @"ARCountlyAppKey";
+NSString *const ARCountlyHost = @"ARCountlyHost";
+NSString *const ARTestFlightAppToken = @"ARTestFlight";
+NSString *const ARCrashlyticsAPIKey = @"ARCrashlytics";
+NSString *const ARMixpanelToken = @"ARMixpanel";
+NSString *const ARMixpanelHost = @"ARMixpanelHost";
+NSString *const ARFlurryAPIKey = @"ARFlurry";
+NSString *const ARBugsnagAPIKey = @"ARBugsnag";
+NSString *const ARLocalyticsAppKey = @"ARLocalytics";
+NSString *const ARKISSMetricsAPIKey = @"ARKISSMetrics";
+NSString *const ARCrittercismAppID = @"ARCrittercism";
+NSString *const ARGoogleAnalyticsID = @"ARGoogleAnalytics";
+NSString *const ARHelpshiftAppID = @"ARHelpshiftAppID";
+NSString *const ARHelpshiftDomainName = @"ARHelpshiftDomainName";
+NSString *const ARHelpshiftAPIKey = @"ARHelpshiftAPIKey";
+NSString *const ARTapstreamAccountName = @"ARTapstreamAccountName";
+NSString *const ARTapstreamDeveloperSecret = @"ARTapstreamDeveloperSecret";
+NSString *const ARTapstreamConfig = @"ARTapstreamConfig";
+NSString *const ARNewRelicAppToken = @"ARNewRelicAppToken";
+NSString *const ARAmplitudeAPIKey = @"ARAmplitudeAPIKey";
+NSString *const ARHockeyAppLiveID = @"ARHockeyAppLiveID";
+NSString *const ARHockeyAppBetaID = @"ARHockeyAppBetaID";
+NSString *const ARParseApplicationID = @"ARParseApplicationID";
+NSString *const ARParseClientKey = @"ARParseClientKey";
+NSString *const ARHeapAppID = @"ARHeapAppID";
+NSString *const ARChartbeatID = @"ARChartbeatID";
+NSString *const ARAppseeRegressProperties = @"ARAppseeRegressProperties";
+NSString *const ARAppseeAPIKey = @"ARAppseeAPIKey";
+NSString *const ARAppsFlyerKey = @"ARAppsFlyerKey";
+NSString *const ARItuneAppID = @"ARItuneAppID";
+NSString *const ARUMengAnalyticsID = @"ARUMengAnalyticsID";
+NSString *const ARLibratoEmail = @"ARLibratoEmail";
+NSString *const ARLibratoToken = @"ARLibratoToken";
+NSString *const ARLibratoPrefix = @"ARLibratoPrefix";
+NSString *const ARIntercomApiKey = @"ARInteSetuprcomApiKey";
+NSString *const ARIntercomAppId = @"ARIntercomAppId";
