@@ -22,7 +22,6 @@
     [[AppsFlyerTracker sharedTracker] trackAppLaunch];
     [AppsFlyerTracker sharedTracker].appleAppID = iTunesAppID;
     [AppsFlyerTracker sharedTracker].appsFlyerDevKey = key;
-    [AppsFlyerTracker sharedTracker].isHTTPS = YES;
 #endif
     return [super init];
 }
