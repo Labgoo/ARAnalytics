@@ -411,6 +411,19 @@ static ARAnalytics *_sharedAnalytics;
     }];
 }
 
++ (NSDictionary *)_combinePropertiesWithLocalizedHour:(NSDictionary *)properties {
+    NSDate *date = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+    [dateFormatter setDateFormat:@"HH"];
+    NSString *hour = [dateFormatter stringFromDate:date];
+    NSMutableDictionary *combinedProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
+    [combinedProperties addEntriesFromDictionary:@{
+                                                   @"localized hour" : hour,
+                                                   }];
+    return combinedProperties;
+}
+
 #pragma mark -
 #pragma mark Events
 
@@ -420,7 +433,7 @@ static ARAnalytics *_sharedAnalytics;
 }
 
 + (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
-    NSDictionary *combinedProperties = [_sharedAnalytics mergeProperties:properties forEvent:event];
+    NSDictionary *combinedProperties = [_sharedAnalytics mergeProperties:[ARAnalytics _combinePropertiesWithLocalizedHour:properties] forEvent:event];
     
     [_sharedAnalytics iterateThroughProviders:^(ARAnalyticalProvider *provider) {
         [provider event:event withProperties:combinedProperties];
