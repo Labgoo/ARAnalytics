@@ -94,3 +94,9 @@
 #ifdef AR_LIBRATO_EXISTS
 #import "LibratoProvider.h"
 #endif
+
+#ifdef AR_INTERCOM_EXISTS
+#import "IntercomProvider.h"
+#endif
+
+

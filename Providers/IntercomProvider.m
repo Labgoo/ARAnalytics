@@ -1,94 +1,82 @@
 //
-//  Created by Minh Tu Le 10/04/2014.
-//  Copyright (c) 2014 Wondermall inc. All rights reserved.
-//
+//  IntercomProvider.m
 
+#import "IntercomProvider.h"
+#import "Intercom.h"
 
-#import "AppseeProvider.h"
-#import "Appsee.h"
+static NSString *const kIntercomSuperPropertiesKey = @"superProperties";
 
-static NSString *const kAppseeProviderSuperPropertiesKey = @"superProperties";
+@interface IntercomProvider ()
 
-
-@interface AppseeProvider ()
-
-@property(nonatomic, strong) NSDictionary *superProperties;
+@property(nonatomic, copy) NSDictionary *superProperties;
 
 @end
 
-@implementation AppseeProvider
 
-- (id)initWithIdentifier:(NSString *)identifier {
-    self = [super init];
+@implementation IntercomProvider
+
+#ifdef AR_INTERCOM_EXISTS
+
+- (id)initWithApiKey:(NSString *)apiKey forAppId:(NSString *)appId {
+	self = [super init];
     if (!self) {
         return nil;
     }
-    
-#ifdef AR_APPSEE_EXISTS
-    NSAssert([Appsee class], @"Appsee is not included");
-    [Appsee start:identifier];
-    [Appsee setDebugToNSLog:YES];
-    
-    self.superProperties = @{};
+    [Intercom setApiKey:apiKey forAppId:appId];
     [self _unarchiveData];
-#endif
-    
     return self;
 }
 
-#ifdef AR_APPSEE_EXISTS
-/*!
- @param email is ignored by Appsee
- */
-- (void)identifyUserWithID:(NSString *)userID andEmailAddress:(NSString *)email {
-    [Appsee setUserID:userID];
+- (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
+	[Intercom logEventWithName:event metaData:properties];
 }
 
+- (void)didShowNewPageView:(NSString *)pageTitle withProperties:(NSDictionary *)properties {
+    NSString *event = [NSString stringWithFormat:@"View %@", pageTitle];
+    [Intercom logEventWithName:event metaData:properties];
+}
+
+- (void)identifyUserWithID:(NSString *)userID andEmailAddress:(NSString *)email {
+    [Intercom registerUserWithUserId:userID];
+    if (email) {
+         [Intercom updateUserWithAttributes:@{ @"email" : email}];
+    }
+}
+
+#pragma mark - Super Properties
+
 - (void)addSuperProperties:(NSDictionary *)properties {
-    properties = [properties copy];
     [self _assertPropertyTypes:properties];
     
-    NSMutableDictionary *temp = [NSMutableDictionary dictionaryWithDictionary:self.superProperties];
-    [temp addEntriesFromDictionary:properties];
-    self.superProperties = [temp copy];
+    NSMutableDictionary *mutableSuperProperties = [properties mutableCopy];
+    [mutableSuperProperties addEntriesFromDictionary:properties];
+    self.superProperties = mutableSuperProperties;
     
+    [self _updateUserWithAttributes];
     [self _archiveData];
 }
 
 - (void)removeSuperProperty:(NSString *)propertyName {
-    NSMutableDictionary *temp = [NSMutableDictionary dictionaryWithDictionary:self.superProperties];
-    [temp removeObjectForKey:propertyName];
-    self.superProperties = [temp copy];
+    NSMutableDictionary *mutableSuperProperties = [self.superProperties mutableCopy];
+    [mutableSuperProperties removeObjectForKey:propertyName];
+    self.superProperties = mutableSuperProperties;
     
+    [self _updateUserWithAttributes];
     [self _archiveData];
 }
 
 - (void)clearSuperProperties {
     self.superProperties = @{};
-    
+
+    [self _updateUserWithAttributes];
     [self _archiveData];
 }
-
-- (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
-    NSMutableDictionary *propertiesWithSuperProperties = nil;
-    if (self.shouldRegressProperties == NO) {
-        properties = [properties copy];
-        propertiesWithSuperProperties = [NSMutableDictionary dictionaryWithDictionary:self.superProperties];
-        [propertiesWithSuperProperties addEntriesFromDictionary:properties];
-    }
-    
-    [Appsee addEvent:event withProperties:propertiesWithSuperProperties];
-}
-
-#endif
 
 #pragma mark - Private
 
 - (void)_archiveData {
     NSString *filePath = [self _dataFilePath];
-    NSDictionary *data = @{
-                           kAppseeProviderSuperPropertiesKey : self.superProperties
-                           };
+    NSDictionary *data = @{kIntercomSuperPropertiesKey : self.superProperties};
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if (![NSKeyedArchiver archiveRootObject:data toFile:filePath]) {
@@ -109,14 +97,13 @@ static NSString *const kAppseeProviderSuperPropertiesKey = @"superProperties";
     }
     
     if (data) {
-        self.superProperties = data[kAppseeProviderSuperPropertiesKey] ? data[kAppseeProviderSuperPropertiesKey] : @{};
+        self.superProperties = data[kIntercomSuperPropertiesKey] ?: @{};
     }
 }
 
 - (NSString *)_dataFilePath {
-    NSString *filename = [NSString stringWithFormat:@"ARAnalytics-AppseeProvider-data.plist"];
     return [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject]
-            stringByAppendingPathComponent:filename];
+            stringByAppendingPathComponent:@"ARAnalytics-IntercomProvider-data.plist"];
 }
 
 - (void)_assertPropertyTypes:(NSDictionary *)properties {
@@ -137,5 +124,11 @@ static NSString *const kAppseeProviderSuperPropertiesKey = @"superProperties";
     }
 }
 
-@end
+- (void)_updateUserWithAttributes {
+    [Intercom updateUserWithAttributes:@{@"custom_attributes": self.superProperties}];
+    
+}
 
+#endif
+
+@end
