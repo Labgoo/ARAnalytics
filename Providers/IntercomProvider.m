@@ -2,7 +2,8 @@
 //  IntercomProvider.m
 
 #import "IntercomProvider.h"
-#import "Intercom.h"
+#import <Intercom/Intercom.h>
+
 
 static NSString *const kIntercomSuperPropertiesKey = @"superProperties";
 

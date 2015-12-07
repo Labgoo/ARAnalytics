@@ -5,7 +5,7 @@
 
 
 #import "ARAnalytics+Intercom.h"
-#import "Intercom.h"
+#import <Intercom/Intercom.h>
 
 
 @implementation ARAnalytics (Intercom)

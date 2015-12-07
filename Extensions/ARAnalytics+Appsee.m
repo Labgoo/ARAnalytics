@@ -5,7 +5,7 @@
 
 
 #import "ARAnalytics+Appsee.h"
-#import "Appsee.h"
+#import <Appsee/Appsee.h>
 
 
 @implementation ARAnalytics (Appsee)

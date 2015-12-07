@@ -5,7 +5,7 @@
 
 
 #import "AppseeProvider.h"
-#import "Appsee.h"
+#import <Appsee/Appsee.h>
 
 static NSString *const kAppseeProviderSuperPropertiesKey = @"superProperties";
 
