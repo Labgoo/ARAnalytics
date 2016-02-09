@@ -44,6 +44,20 @@ static NSString *const kIntercomSuperPropertiesKey = @"superProperties";
     }
 }
 
+- (void)setUserProperty:(NSString *)property toValue:(NSString *)value {
+    if (value == nil) {
+        NSLog(@"ARAnalytics: Value cannot be nil ( %@ ) ", property);
+        return;
+    }
+    
+    if (property == nil) {
+        NSLog(@"ARAnalytics: Property cannot be nil ( for value %@ ) ", value);
+        return;
+    }
+    
+    [Intercom updateUserWithAttributes:@{[property lowercaseString]: value}];
+}
+
 #pragma mark - Super Properties
 
 - (void)addSuperProperties:(NSDictionary *)properties {
