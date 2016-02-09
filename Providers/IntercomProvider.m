@@ -43,6 +43,10 @@ static NSString *const kIntercomSuperPropertiesKey = @"superProperties";
     }
 }
 
+- (void)setUserProperty:(NSString *)property toValue:(NSString *)value {
+    [Intercom updateUserWithAttributes:@{[property lowercaseString]: value}];
+}
+     
 #pragma mark - Super Properties
 
 - (void)addSuperProperties:(NSDictionary *)properties {
