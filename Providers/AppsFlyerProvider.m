@@ -30,6 +30,9 @@
 
 - (void)identifyUserWithID:(NSString *)userID andEmailAddress:(NSString *)email {
     [AppsFlyerTracker sharedTracker].customerUserID = userID;
+    if (email) {
+        [[AppsFlyerTracker sharedTracker] setUserEmails:@[email] withCryptType:EmailCryptTypeSHA1];
+    }
 }
 
 - (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
