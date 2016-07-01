@@ -47,20 +47,19 @@ Pod::Spec.new do |s|
   s.subspec "CoreMac" do |ss|
     ss.source_files = ['*.{h,m}', 'Providers/ARAnalyticalProvider.{h,m}', 'Providers/ARAnalyticsProviders.h']
     ss.exclude_files = ['ARDSL.{h,m}']
-    ss.platforms = [:osx]
+    ss.platforms = :osx
   end
 
   s.subspec "CoreIOS" do |ss|
     ss.source_files = ['*.{h,m}', 'Providers/ARAnalyticalProvider.{h,m}', 'Providers/ARAnalyticsProviders.h']
     ss.exclude_files = ['ARDSL.{h,m}']
     ss.private_header_files = 'ARNavigationControllerDelegateProxy.h'
-    ss.platforms = [:ios]
+    ss.platforms = :ios
   end
 
   s.subspec "DSL" do |ss|
     ss.source_files = ['*.{h,m}', 'ARDSL.{h,m}', 'Providers/ARAnalyticalProvider.{h,m}', 'Providers/ARAnalyticsProviders.h']
     ss.dependency 'Aspects', '~> 1.3.1'
-    ss.platforms = [:ios, :osx]
   end
 
   # for the description
