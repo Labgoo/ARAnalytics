@@ -40,21 +40,21 @@ Pod::Spec.new do |s|
 #  countly_mac     = { :spec_name => "CountlyOSX",      :dependency => "Countly",                :osx => true,  :provider => "Countly" }
   mixpanel_mac    = { :spec_name => "MixpanelOSX",     :dependency => "Mixpanel-OSX-Community", :osx => true,  :provider => "Mixpanel"}
 
-  $all_analytics = [mixpanel, localytics, flurry, google, kissmetrics, crittercism, crashlytics, bugsnag, countly, helpshift,kissmetrics_mac, mixpanel_mac, tapstream, newRelic, amplitude, hockeyApp, parseAnalytics, heap, chartbeat, appsee, appsflyer, umeng, librato, intercom]
+  all_analytics = [mixpanel, localytics, flurry, google, kissmetrics, crittercism, crashlytics, bugsnag, countly, helpshift,kissmetrics_mac, mixpanel_mac, tapstream, newRelic, amplitude, hockeyApp, parseAnalytics, heap, chartbeat, appsee, appsflyer, umeng, librato, intercom]
 
   # To make the pod spec API cleaner, subspecs are "iOS/KISSmetrics"
 
   s.subspec "CoreMac" do |ss|
     ss.source_files = ['*.{h,m}', 'Providers/ARAnalyticalProvider.{h,m}', 'Providers/ARAnalyticsProviders.h']
     ss.exclude_files = ['ARDSL.{h,m}']
-    ss.platforms = :osx
+    ss.platform = :osx
   end
 
   s.subspec "CoreIOS" do |ss|
     ss.source_files = ['*.{h,m}', 'Providers/ARAnalyticalProvider.{h,m}', 'Providers/ARAnalyticsProviders.h']
     ss.exclude_files = ['ARDSL.{h,m}']
     ss.private_header_files = 'ARNavigationControllerDelegateProxy.h'
-    ss.platforms = :ios
+    ss.ios.deployment_target = '7.0'
   end
 
   s.subspec "DSL" do |ss|
@@ -63,11 +63,11 @@ Pod::Spec.new do |s|
   end
 
   # for the description
-  $all_ios_names = []
-  $all_osx_names = []
+  all_ios_names = []
+  all_osx_names = []
 
   # make specs for each analytics
-  $all_analytics.each do |analytics_spec|
+  all_analytics.each do |analytics_spec|
     s.subspec analytics_spec[:spec_name] do |ss|
 
       providername = analytics_spec[:provider]? analytics_spec[:provider] : analytics_spec[:spec_name]
@@ -85,14 +85,14 @@ Pod::Spec.new do |s|
       if analytics_spec[:osx]
         ss.osx.source_files = sources
         ss.dependency 'ARAnalytics/CoreMac'
-        ss.platforms = [:osx]
-        $all_osx_names << providername
+        ss.platform = :osx
+        all_osx_names << providername
 
       else
         ss.ios.source_files = sources
         ss.dependency 'ARAnalytics/CoreIOS'
-        ss.platforms = [:ios]
-        $all_ios_names << providername
+        ss.platform = :ios
+        all_ios_names << providername
       end
 
       # If there's a podspec dependency include it
@@ -114,7 +114,7 @@ Pod::Spec.new do |s|
 
   # cycle through clashing subspecs, removing all but the the one we want to form non_clashing array
   clashing_subspecs.each do |keep_subspec|
-    non_clash = $all_analytics
+    non_clash = all_analytics
     clashing_subspecs.each do |clashing|
       if clashing != keep_subspec then non_clash.delete(clashing) end
     end
@@ -137,8 +137,8 @@ Pod::Spec.new do |s|
 
   # I always forget to keep the description up to date as provider support is added and removed, thus automation.
 
-  ios_spec_names = $all_ios_names[0...-1].join(", ") + " and " + $all_ios_names[-1]
-  osx_spec_names = $all_osx_names[0...-1].join(", ") + " and " + $all_osx_names[-1]
+  ios_spec_names = all_ios_names[0...-1].join(", ") + " and " + all_ios_names[-1]
+  osx_spec_names = all_osx_names[0...-1].join(", ") + " and " + all_osx_names[-1]
   s.description  =  "ARAnalytics is a analytics abstraction library offering a sane API for tracking events and user data. It currently supports on iOS: #{ ios_spec_names }. And for OS X: #{ osx_spec_names }. It does this by using CocoaPods subspecs to let you decide which libraries you'd like to use. You are free to also use the official API for any provider too. Also, comes with an amazing DSL to clear up your methods."
 
 end
