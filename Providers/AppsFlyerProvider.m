@@ -33,7 +33,7 @@
 }
 
 - (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
-    [[AppsFlyerTracker sharedTracker] trackEvent:event withValue:@""];
+    [[AppsFlyerTracker sharedTracker] trackEvent:event withValues:properties];
 }
 
 #endif
