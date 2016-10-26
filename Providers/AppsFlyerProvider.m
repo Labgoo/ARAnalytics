@@ -9,6 +9,10 @@
 #import "AppsFlyerProvider.h"
 #import "AppsFlyerTracker.h"
 
+@interface AppsFlyerProvider ()
+@property (nonatomic) BOOL wasLaunched = NO;
+
+@end
 
 @implementation AppsFlyerProvider
 
@@ -19,17 +23,21 @@
 - (instancetype)initWithITunesAppID:(NSString *)iTunesAppID key:(NSString *)key {
 #ifdef AR_APPSFLYER_EXISTS
     NSAssert([AppsFlyerTracker class], @"AppsFlyer is not included");
-    [[AppsFlyerTracker sharedTracker] trackAppLaunch];
+    self.wasLaunched = YES;
     [AppsFlyerTracker sharedTracker].appleAppID = iTunesAppID;
     [AppsFlyerTracker sharedTracker].appsFlyerDevKey = key;
 #endif
     return [super init];
 }
 
-#ifdef AR_APPSEE_EXISTS
+#ifdef AR_APPSFLYER_EXISTS
 
 - (void)identifyUserWithID:(NSString *)userID andEmailAddress:(NSString *)email {
     [AppsFlyerTracker sharedTracker].customerUserID = userID;
+    if (self.wasLaunched) {
+        [[AppsFlyerTracker sharedTracker] trackAppLaunch];
+        self.wasLaunched = NO;
+    }
 }
 
 - (void)event:(NSString *)event withProperties:(NSDictionary *)properties {
