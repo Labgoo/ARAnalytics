@@ -7,7 +7,7 @@
 //
 
 #import "AppsFlyerProvider.h"
-#import "AppsFlyerTracker.h"
+#import <AppsFlyerLib/AppsFlyerTracker.h>
 
 @interface AppsFlyerProvider ()
 @property (nonatomic) BOOL didTrackAppLaunched;
