@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
   heap           = { :spec_name => "HeapAnalytics",    :dependency => "Heap" }
   chartbeat      = { :spec_name => "Chartbeat",        :dependency => "Chartbeat", :has_extension => true }
   appsee         = { :spec_name => "Appsee",           :dependency => "Appsee", :has_extension => true }
-  appsflyer      = { :spec_name => "Appsflyer",        :dependency => "AppsFlyer-SDK" }
+  appsflyer      = { :spec_name => "Appsflyer",        :dependency => "AppsFlyerFramework" }
   umeng          = { :spec_name => "UMengAnalytics",   :dependency => "UMengAnalytics" }
   librato        = { :spec_name => "Librato" }
   crashlytics    = { :spec_name => "Crashlytics" }
