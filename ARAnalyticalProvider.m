@@ -74,7 +74,7 @@ static NSString *const ARTimingEventLengthKey = @"length";
         [combined addEntriesFromDictionary:properties];
         propertiesToSend = combined;
     } else {
-        propertiesToSend = properties;
+        propertiesToSend = {@"screen": pageTitle};
     }
     
     [self event:@"Screen view" withProperties:propertiesToSend];
